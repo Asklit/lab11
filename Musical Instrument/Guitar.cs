@@ -128,5 +128,18 @@ namespace Musical_Instrument
         {
             return this.MemberwiseClone();
         }
+
+        /// <summary>
+        /// Переопределение хешкода
+        /// </summary>
+        /// <returns>HashCode</returns>
+        public override int GetHashCode()
+        {
+            int num = rand.Next(1, 123456789);
+            num ^= Name.GetHashCode();
+            num ^= Id.GetHashCode();
+            num ^= CountString.GetHashCode();
+            return num;
+        }
     }
 }

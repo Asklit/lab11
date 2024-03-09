@@ -154,7 +154,7 @@ namespace Musical_Instrument
         {
             if (obj == null) return false;
             if (obj is MusicalInstrument)
-                return this.Name == ((MusicalInstrument)obj).Name && this.Id == ((MusicalInstrument)obj).Id;
+                return this.Name == ((MusicalInstrument)obj).Name && this.Id.Number == ((MusicalInstrument)obj).Id.Number;
             return false;
         }
 
@@ -190,6 +190,14 @@ namespace Musical_Instrument
         public virtual object ShallowCopy()
         {
             return this.MemberwiseClone();
+        }
+
+        public override int GetHashCode()
+        {
+            int num = rand.Next(1, 123456789);
+            num ^= Name.GetHashCode();
+            num ^= Id.GetHashCode();
+            return num;
         }
     }
 }

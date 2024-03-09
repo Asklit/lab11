@@ -460,6 +460,20 @@ namespace lab11
         }
 
         /// <summary>
+        /// Печать времени
+        /// </summary>
+        /// <param name="key">Показатель найденного элемента</param>
+        /// <param name="dataType">Тип данных</param>
+        /// <param name="sw">stopwatch</param>
+        static void printTime(bool key, string dataType, double time)
+        {
+            if (key)
+                Console.WriteLine(dataType.PadRight(54) + "найден".PadRight(16) + time);
+            else
+                Console.WriteLine(dataType.PadRight(53) + "не найден".PadRight(17) + time);
+        }
+
+        /// <summary>
         /// Поиск гитары в коллекции
         /// </summary>
         /// <param name="collection">Коллекция</param>
@@ -468,38 +482,59 @@ namespace lab11
         {
             const int count = 100;
             Stopwatch sw = Stopwatch.StartNew();
+            bool key1 = collection.firstQueue.Contains(guitar);
+            bool key2 = collection.secondQueue.Contains(guitar.ToString());
+            bool key3 = collection.firstDict.ContainsValue(guitar);
+            bool key4 = collection.secondDict.ContainsValue(guitar);
+            bool key5 = collection.firstDict.ContainsKey(guitar.GetBase);
+            bool key6 = collection.secondDict.ContainsKey(guitar.ToString());
             long[] time1 = new long[count];
             long[] time2 = new long[count];
             long[] time3 = new long[count];
             long[] time4 = new long[count];
+            long[] time5 = new long[count];
+            long[] time6 = new long[count];
 
 
             for (int i = 0; i < count; i++)
             {
                 sw.Restart();
-                collection.firstQueue.Contains(guitar);
+                key1 = collection.firstQueue.Contains(guitar);
                 sw.Stop();
                 time1[i] = sw.ElapsedTicks;
 
                 sw.Restart();
-                collection.secondQueue.Contains(guitar.ToString());
+                key2 = collection.secondQueue.Contains(guitar.ToString());
                 sw.Stop();
                 time2[i] = sw.ElapsedTicks;
 
                 sw.Restart();
-                collection.firstDict.ContainsValue(guitar);
+                key3 = collection.firstDict.ContainsValue(guitar);
                 sw.Stop();
                 time3[i] = sw.ElapsedTicks;
 
                 sw.Restart();
-                collection.secondDict.ContainsValue(guitar);
+                key4 = collection.secondDict.ContainsValue(guitar);
                 sw.Stop();
                 time4[i] = sw.ElapsedTicks;
+
+                sw.Restart();
+                key5 = collection.firstDict.ContainsKey(guitar.GetBase);
+                sw.Stop();
+                time5[i] = sw.ElapsedTicks;
+
+                sw.Restart();
+                key6 = collection.secondDict.ContainsKey(guitar.ToString());
+                sw.Stop();
+                time6[i] = sw.ElapsedTicks;
             }
-            Console.WriteLine("Queue1<Gutiar>".PadRight(40) + time1.Average());
-            Console.WriteLine("Queue2<string>".PadRight(40) + time2.Average());
-            Console.WriteLine("Dictionary1<MusicalInstrument, Guitar>".PadRight(40) + time3.Average());
-            Console.WriteLine("Dictionary2<string, Guitar>".PadRight(40) + time4.Average());
+
+            printTime(key1, "Queue1<Gutiar>", time1.Average());
+            printTime(key2, "Queue2<string>", time2.Average());
+            printTime(key3, "Dictionary1<MusicalInstrument, Guitar> by value", time3.Average());
+            printTime(key4, "Dictionary2<string, Guitar> by value", time4.Average());
+            printTime(key6, "Dictionary1<MusicalInstrument, Guitar> by key", time5.Average());
+            printTime(key6, "Dictionary2<string, Guitar> by key", time6.Average());
         }
 
         /// <summary>
@@ -533,7 +568,7 @@ namespace lab11
 
             Stopwatch sw = Stopwatch.StartNew();
 
-            Console.WriteLine("Тип данных:".PadRight(40) + "Время");
+            Console.WriteLine("Тип данных:".PadRight(50) + "Статус поиска".PadRight(19) + "Время");
             // Поиск элемента в разных коллекциях
             Console.WriteLine("Поиск элементов в начале ");
             searchItemInCollection(collection, startGuitar);
