@@ -91,7 +91,7 @@ namespace Musical_Instrument
         public override void RandomInit()
         {
             base.RandomInit();
-            CountString = rand.Next(0, 10);
+            CountString = rand.Next(0, 10000);
         }
 
         /// <summary>
@@ -135,9 +135,8 @@ namespace Musical_Instrument
         /// <returns>HashCode</returns>
         public override int GetHashCode()
         {
-            int num = rand.Next(1, 123456789);
+            int num = 1234567890;
             num ^= Name.GetHashCode();
-            num ^= Id.GetHashCode();
             num ^= CountString.GetHashCode();
             return num;
         }

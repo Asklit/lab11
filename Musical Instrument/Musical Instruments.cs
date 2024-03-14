@@ -194,9 +194,9 @@ namespace Musical_Instrument
 
         public override int GetHashCode()
         {
-            int num = rand.Next(1, 123456789);
+            int num = 1234567890;
             num ^= Name.GetHashCode();
-            num ^= Id.GetHashCode();
+            num ^= Id.Number.GetHashCode();
             return num;
         }
     }

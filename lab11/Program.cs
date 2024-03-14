@@ -30,7 +30,7 @@ namespace lab11
         /// <param name="queue">Очередь</param>
         static void showQueue(Queue queue)
         {
-            if (queue.ToArray().Length != 0)
+            if (queue.Count != 0)
             {
                 int index = 1;
                 foreach (var item in queue)
@@ -70,27 +70,49 @@ namespace lab11
         /// Поиск всех гитар
         /// </summary>
         /// <param name="queue">Очередь</param>
-        static void FindAllGuitars(Queue queue)
+        static MusicalInstrument[] FindAllGuitars(Queue queue)
         {
-            int index = 1;
+            int index = 0;
             foreach (var item in queue)
             {
-                if (item is Guitar)
+                Guitar? guitar = item as Guitar;
+                if (guitar != null)
                 {
-                    Console.Write($"{index}. ");
-                    Console.WriteLine(item);
                     index++;
                 }
             }
+            MusicalInstrument[] mi = new MusicalInstrument[index];
+            index = 0;
+            foreach (var item in queue)
+            {
+                Guitar? guitar = item as Guitar;
+                if (guitar != null)
+                {
+                    mi[index] = guitar;
+                    index++;
+                }
+            }
+            return mi;
         }
 
         /// <summary>
         /// Поиск отличников
         /// </summary>
         /// <param name="queue">Очередь для поиска</param>
-        static void searchExcellentStudents(Queue queue)
+        static Student[] searchExcellentStudents(Queue queue)
         {
-            int index = 1;
+            int index = 0;
+            foreach (var item in queue)
+            {
+                Student? student = item as Student;
+                if (student != null)
+                {
+                    if (student.Gpa > 6)
+                        index++;
+                }
+            }
+            Student[] mi = new Student[index];
+            index = 0;
             foreach (var item in queue)
             {
                 Student? student = item as Student;
@@ -98,12 +120,12 @@ namespace lab11
                 {
                     if (student.Gpa > 6)
                     {
-                        Console.Write($"{index}. ");
-                        Console.WriteLine(item);
+                        mi[index] = student;
                         index++;
                     }
                 }
             }
+            return mi;
         }
 
         /// <summary>
@@ -116,7 +138,8 @@ namespace lab11
             List<MusicalInstrument> instrumentList = new List<MusicalInstrument>();
             foreach (var item in queue)
             {
-                instrumentList.Add((MusicalInstrument)item);
+                MusicalInstrument mi = (MusicalInstrument)item;
+                instrumentList.Add((MusicalInstrument)mi.Clone());
             }
             instrumentList.Sort();
             Queue sortedQueue = new Queue();
@@ -134,11 +157,20 @@ namespace lab11
         /// <param name="instrument">Искомый инструмент</param>
         static void seachItem(Queue queue, MusicalInstrument instrument)
         {
-            int pos = queue.ToArray().ToList().IndexOf(instrument);
-            if (pos != -1)
-                Console.WriteLine($"Позиция элемента - {pos + 1}");
+            if (queue.Contains(instrument))
+                Console.WriteLine($"Элемент найден");
             else
                 Console.WriteLine($"Элемент не найден");
+        }
+
+        static Queue Clone(Queue queue)
+        {
+            Queue newQueue = new();
+            foreach (MusicalInstrument item in queue)
+            {
+                newQueue.Enqueue(item.Clone());
+            }
+            return newQueue;
         }
 
         /// <summary>
@@ -182,22 +214,45 @@ namespace lab11
             GetPianoWithMaxButtons(queue).ShowVirtualMethod();
             Console.WriteLine("-------------------------------------------------");
             Console.WriteLine("Поиск всех гитар в очереди:");
-            FindAllGuitars(queue);
+            int count = 1;
+            foreach (var item in FindAllGuitars(queue))
+            {
+                Console.Write($"{count}. ");
+                item.ShowVirtualMethod();
+                count++;
+            }
             Console.WriteLine("-------------------------------------------------");
             Console.WriteLine("Поиск всех отличников:");
-            searchExcellentStudents(queue);
+            count = 1;
+            foreach (var item in searchExcellentStudents(queue))
+            {
+                Console.Write($"{count}. ");
+                Console.WriteLine(item.ToString());
+                count++;
+            }
 
             // Клонирование коллекции
-            Queue cloneQueue = new Queue(queue);
+            Queue cloneQueue = new Queue();
+            for (int i = 0; i < 3; i++)
+            {
+                Piano piano = new Piano();
+                piano.RandomInit();
+                cloneQueue.Enqueue(piano);
+
+                Guitar guitar = new Guitar();
+                guitar.RandomInit();
+                cloneQueue.Enqueue(guitar);
+            }
+            cloneQueue = Clone(cloneQueue);
             cloneQueue.Dequeue();
             cloneQueue.Dequeue();
             Console.WriteLine("-------------------------------------------------");
             Console.WriteLine("Клонирование очереди и удаление 2х элементов в клоне.");
-            Console.WriteLine("Вывод изначальной очереди:");
-            showQueue(queue);
-            Console.WriteLine("-------------------------------------------------");
             Console.WriteLine("Вывод склонированной очереди:");
             showQueue(cloneQueue);
+            Console.WriteLine("-------------------------------------------------");
+            Console.WriteLine("Вывод изначальной очереди:");
+            showQueue(queue);
 
             // Сортировка очереди O_O
             // Сама очередь не подразумевает сортировку, но я реализую ее
@@ -220,7 +275,7 @@ namespace lab11
                 guitar.RandomInit();
                 queue.Enqueue(guitar);
             }
-            
+
             Console.WriteLine("-------------------------------------------------");
             Console.WriteLine("Сортировка очереди:");
             Console.WriteLine("Исходная очередь:");
@@ -252,7 +307,7 @@ namespace lab11
         /// <param name="stack">Стек</param>
         static void showStack(Stack<MusicalInstrument> stack)
         {
-            if (stack.ToArray().Length != 0)
+            if (stack.Count != 0)
             {
                 int index = 1;
                 foreach (var item in stack)
@@ -264,7 +319,7 @@ namespace lab11
             }
             else
                 Console.WriteLine("Стек пустой.");
-            
+
         }
 
         /// <summary>
@@ -293,18 +348,29 @@ namespace lab11
         /// Поиск всех гитар
         /// </summary>
         /// <param name="stack">Стек</param>
-        static void FindAllGuitars(Stack<MusicalInstrument> stack)
+        static MusicalInstrument[] FindAllGuitars(Stack<MusicalInstrument> stack)
         {
-            int index = 1;
+            int index = 0;
             foreach (var item in stack)
             {
-                if (item is Guitar)
+                Guitar? guitar = item as Guitar;
+                if (guitar != null)
                 {
-                    Console.Write($"{index}. ");
-                    Console.WriteLine(item);
                     index++;
                 }
             }
+            MusicalInstrument[] mi = new MusicalInstrument[index];
+            index = 0;
+            foreach (var item in stack)
+            {
+                Guitar? guitar = item as Guitar;
+                if (guitar != null)
+                {
+                    mi[index] = guitar;
+                    index++;
+                }
+            }
+            return mi;
         }
 
         /// <summary>
@@ -339,9 +405,11 @@ namespace lab11
             List<MusicalInstrument> instrumentList = new List<MusicalInstrument>();
             foreach (var item in stack)
             {
-                instrumentList.Add((MusicalInstrument)item);
+                MusicalInstrument mi = (MusicalInstrument)item;
+                instrumentList.Add((MusicalInstrument)mi.Clone());
             }
             instrumentList.Sort();
+            instrumentList.Reverse();
             Stack<MusicalInstrument> sortedStack = new Stack<MusicalInstrument>();
             foreach (var item in instrumentList)
             {
@@ -357,11 +425,23 @@ namespace lab11
         /// <param name="instrument">Искомый инструмент</param>
         static void searchItem(Stack<MusicalInstrument> stack, MusicalInstrument instrument)
         {
-            int pos1 = stack.ToArray().ToList().IndexOf(instrument);
-            if (pos1 != -1)
-                Console.WriteLine($"Позиция элемента - {pos1 + 1}");
+            if (stack.Contains(instrument))
+                Console.WriteLine($"Элемент найден");
             else
                 Console.WriteLine($"Элемент не найден");
+        }
+
+        static Stack<MusicalInstrument> Clone(Stack<MusicalInstrument> stack)
+        {
+            List<MusicalInstrument> lst = new();
+            foreach (MusicalInstrument item in stack)
+            {
+                lst.Add((MusicalInstrument)item.Clone());
+            }
+            Stack<MusicalInstrument> newStack = new Stack<MusicalInstrument>();
+            foreach (var item in lst)
+                newStack.Push(item);
+            return newStack;
         }
 
         /// <summary>
@@ -406,7 +486,13 @@ namespace lab11
             GetPianoWithMaxButtons(stack).ShowVirtualMethod();
             Console.WriteLine("-------------------------------------------------");
             Console.WriteLine("Поиск всех гитар в очереди:");
-            FindAllGuitars(stack);
+            int count = 1;
+            foreach (var item in FindAllGuitars(stack))
+            {
+                Console.Write($"{count}. ");
+                item.ShowVirtualMethod();
+                count++;
+            }
             Console.WriteLine("-------------------------------------------------");
             Console.WriteLine("Поиск всех гитар с типом питания UBS:");
             Stack<MusicalInstrument> res = GetAllGuitarsWithUSB(stack);
@@ -414,16 +500,18 @@ namespace lab11
 
 
             // Клонирование коллекции
-            Stack<MusicalInstrument> cloneStack = new Stack<MusicalInstrument>(stack);
+            Stack<MusicalInstrument> cloneStack = new Stack<MusicalInstrument>();
+            cloneStack = Clone(stack);
             cloneStack.Pop();
             cloneStack.Pop();
+            cloneStack.Peek().Name = "Test";
             Console.WriteLine("-------------------------------------------------");
             Console.WriteLine("Клонирование стека и удаление 2х элементов в клоне.");
-            Console.WriteLine("Вывод изначального стека:");
-            showStack(stack);
-            Console.WriteLine("-------------------------------------------------");
             Console.WriteLine("Вывод склонированного стека:");
             showStack(cloneStack);
+            Console.WriteLine("-------------------------------------------------");
+            Console.WriteLine("Вывод изначального стека:");
+            showStack(stack);
 
             // Сортировка стека O_O
             // Сам стек не подразумевает сортировку, но я реализую ее
@@ -465,12 +553,10 @@ namespace lab11
         /// <param name="key">Показатель найденного элемента</param>
         /// <param name="dataType">Тип данных</param>
         /// <param name="sw">stopwatch</param>
-        static void printTime(bool key, string dataType, double time)
+        static void printTime(bool[] key, string dataType, double time)
         {
-            if (key)
-                Console.WriteLine(dataType.PadRight(54) + "найден".PadRight(16) + time);
-            else
-                Console.WriteLine(dataType.PadRight(53) + "не найден".PadRight(17) + time);
+            bool value = true;
+            Console.WriteLine(dataType.PadRight(57) + $"{key.Count(c => c == value)}/{key.Length}".PadRight(19) + time);
         }
 
         /// <summary>
@@ -480,14 +566,14 @@ namespace lab11
         /// <param name="guitar">Искомая гитара</param>
         static void searchItemInCollection(TestCollections collection, Guitar guitar)
         {
-            const int count = 100;
+            const int count = 1000;
             Stopwatch sw = Stopwatch.StartNew();
-            bool key1 = collection.firstQueue.Contains(guitar);
-            bool key2 = collection.secondQueue.Contains(guitar.ToString());
-            bool key3 = collection.firstDict.ContainsValue(guitar);
-            bool key4 = collection.secondDict.ContainsValue(guitar);
-            bool key5 = collection.firstDict.ContainsKey(guitar.GetBase);
-            bool key6 = collection.secondDict.ContainsKey(guitar.ToString());
+            bool[] key1 = new bool[count];
+            bool[] key2 = new bool[count];
+            bool[] key3 = new bool[count];
+            bool[] key4 = new bool[count];
+            bool[] key5 = new bool[count];
+            bool[] key6 = new bool[count];
             long[] time1 = new long[count];
             long[] time2 = new long[count];
             long[] time3 = new long[count];
@@ -499,32 +585,34 @@ namespace lab11
             for (int i = 0; i < count; i++)
             {
                 sw.Restart();
-                key1 = collection.firstQueue.Contains(guitar);
+                key1[i] = collection.firstQueue.Contains(guitar);
                 sw.Stop();
                 time1[i] = sw.ElapsedTicks;
 
+                String str = guitar.ToString();
                 sw.Restart();
-                key2 = collection.secondQueue.Contains(guitar.ToString());
+                key2[i] = collection.secondQueue.Contains(str);
                 sw.Stop();
                 time2[i] = sw.ElapsedTicks;
 
                 sw.Restart();
-                key3 = collection.firstDict.ContainsValue(guitar);
+                key3[i] = collection.firstDict.ContainsValue(guitar);
                 sw.Stop();
                 time3[i] = sw.ElapsedTicks;
 
                 sw.Restart();
-                key4 = collection.secondDict.ContainsValue(guitar);
+                key4[i] = collection.secondDict.ContainsValue(guitar);
                 sw.Stop();
                 time4[i] = sw.ElapsedTicks;
 
+                MusicalInstrument mi = guitar.GetBase;
                 sw.Restart();
-                key5 = collection.firstDict.ContainsKey(guitar.GetBase);
+                key5[i] = collection.firstDict.ContainsKey(mi);
                 sw.Stop();
                 time5[i] = sw.ElapsedTicks;
 
                 sw.Restart();
-                key6 = collection.secondDict.ContainsKey(guitar.ToString());
+                key6[i] = collection.secondDict.ContainsKey(str);
                 sw.Stop();
                 time6[i] = sw.ElapsedTicks;
             }
@@ -533,7 +621,7 @@ namespace lab11
             printTime(key2, "Queue2<string>", time2.Average());
             printTime(key3, "Dictionary1<MusicalInstrument, Guitar> by value", time3.Average());
             printTime(key4, "Dictionary2<string, Guitar> by value", time4.Average());
-            printTime(key6, "Dictionary1<MusicalInstrument, Guitar> by key", time5.Average());
+            printTime(key5, "Dictionary1<MusicalInstrument, Guitar> by key", time5.Average());
             printTime(key6, "Dictionary2<string, Guitar> by key", time6.Average());
         }
 
@@ -544,42 +632,36 @@ namespace lab11
         {
             Console.WriteLine();
             Console.WriteLine();
-            Console.WriteLine("Третья часть ЛР - поиск в разных коллекциях");
+            Console.WriteLine("Третья часть ЛР - поиск в разных коллекциях".PadRight(53) + "Кол-во итераций");
             // Создание тестовой коллекции
-            TestCollections collection = new(0);
-            Guitar startGuitar = new Guitar();
-            startGuitar.RandomInit();
-            collection.AddItem(startGuitar);
+            TestCollections collection = new(1000);
 
-            collection.AddRandomItems(499);
-
-            Guitar middleGuitar = new Guitar();
-            middleGuitar.RandomInit();
-            collection.AddItem(middleGuitar);
-
-            collection.AddRandomItems(499);
-
-            Guitar endGuitar = new Guitar();
-            endGuitar.RandomInit();
-            collection.AddItem(endGuitar);
+            MusicalInstrument start = collection.firstQueue.Peek();
+            Queue q = new Queue(collection.firstQueue);
+            for (int i = 0; i < q.Count / 2; i++)
+                q.Dequeue();
+            MusicalInstrument middle = collection.firstQueue.Peek();
+            for (int i = 0; i < q.Count - 1; i++)
+                q.Dequeue();
+            MusicalInstrument end = collection.firstQueue.Peek();
 
             Guitar randomGuitar = new Guitar();
             randomGuitar.RandomInit();
+            while (collection.firstQueue.Contains(randomGuitar))
+                randomGuitar.RandomInit();
 
-            Stopwatch sw = Stopwatch.StartNew();
-
-            Console.WriteLine("Тип данных:".PadRight(50) + "Статус поиска".PadRight(19) + "Время");
+            Console.WriteLine("Тип данных:".PadRight(50) + "с найденным элементом".PadRight(25) + "Время");
             // Поиск элемента в разных коллекциях
             Console.WriteLine("Поиск элементов в начале ");
-            searchItemInCollection(collection, startGuitar);
+            searchItemInCollection(collection, (Guitar)start);
 
             Console.WriteLine("---------");
             Console.WriteLine("Поиск элементов в середине ");
-            searchItemInCollection(collection, middleGuitar);
+            searchItemInCollection(collection, (Guitar)middle);
 
             Console.WriteLine("---------");
             Console.WriteLine("Поиск элементов в конце ");
-            searchItemInCollection(collection, endGuitar);
+            searchItemInCollection(collection, (Guitar)end);
 
             Console.WriteLine("---------");
             Console.WriteLine("Поиск несуществующего элемента");

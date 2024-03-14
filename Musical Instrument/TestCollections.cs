@@ -20,7 +20,23 @@ namespace Musical_Instrument
             secondQueue = new Queue<string>();
             firstDict = new Dictionary<MusicalInstrument, Guitar>();
             secondDict = new Dictionary<string, Guitar>();
-            AddRandomItems(count);
+
+            for (int i = 0; i < count; i++)
+            {
+                Guitar guitar = new Guitar();
+                guitar.RandomInit();
+                while (firstQueue.Contains(guitar))
+                    guitar.RandomInit();
+                
+                firstQueue.Enqueue(guitar);
+
+                MusicalInstrument mi = guitar.GetBase;
+                firstDict.Add(mi, guitar);
+
+                secondQueue.Enqueue(guitar.ToString());
+
+                secondDict.Add(guitar.ToString(), guitar);
+            }
         }
 
         public void AddItem(Guitar guitar)
